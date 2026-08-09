@@ -632,27 +632,48 @@ Batao kya karna hai? Main aur help kar sakta hoon Render ke settings ke liye ya 
 
 **User**
 
-==> Running 'npm run start' 
- npm error Missing script: "start" 
- npm error 
- npm error Did you mean one of these? 
- npm error   npm star # Mark your favorite packages 
- npm error   npm stars # View packages marked as favorites 
- npm error 
- npm error To see a list of scripts, run: 
- npm error   npm run 
- npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-08-09T10_05_11_885Z-debug-0.log 
- ==> Exited with status 1 
- ==> Common ways to troubleshoot your deploy: `https://render.com/docs/troubleshooting-deploys`  
- ==> Running 'npm run start' 
- npm error Missing script: "start" 
- npm error 
- npm error Did you mean one of these? 
- npm error   npm star # Mark your favorite packages 
- npm error   npm stars # View packages marked as favorites 
- npm error 
- npm error To see a list of scripts, run: 
- npm error   npm run 
+==> Running 'npm run start'
+ 
+ npm error Missing script: "start"
+ 
+ npm error
+ 
+ npm error Did you mean one of these?
+ 
+ npm error   npm star # Mark your favorite packages
+ 
+ npm error   npm stars # View packages marked as favorites
+ 
+ npm error
+ 
+ npm error To see a list of scripts, run:
+ 
+ npm error   npm run
+ 
+ npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-08-09T10_05_11_885Z-debug-0.log
+ 
+ ==> Exited with status 1
+ 
+ ==> Common ways to troubleshoot your deploy: `https://render.com/docs/troubleshooting-deploys` 
+ 
+ ==> Running 'npm run start'
+ 
+ npm error Missing script: "start"
+ 
+ npm error
+ 
+ npm error Did you mean one of these?
+ 
+ npm error   npm star # Mark your favorite packages
+ 
+ npm error   npm stars # View packages marked as favorites
+ 
+ npm error
+ 
+ npm error To see a list of scripts, run:
+ 
+ npm error   npm run
+ 
  npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-08-09T10_05_20_020Z-debug-0.log
 
 **Assistant**
@@ -830,18 +851,30 @@ Ab bas ye values bharo, deploy ho jayega! 2 min me live site mil jayegi. Koi iss
 
 **User**
 
-npm error Missing script: "start:render" 
- npm error 
- npm error To see a list of scripts, run: 
- npm error   npm run 
- npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-08-09T10_22_00_579Z-debug-0.log 
- ==> Exited with status 1 
- ==> Common ways to troubleshoot your deploy: `https://render.com/docs/troubleshooting-deploys`  
- ==> Running 'npm run start:render' 
- npm error Missing script: "start:render" 
- npm error 
- npm error To see a list of scripts, run: 
- npm error   npm run 
+npm error Missing script: "start:render"
+ 
+ npm error
+ 
+ npm error To see a list of scripts, run:
+ 
+ npm error   npm run
+ 
+ npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-08-09T10_22_00_579Z-debug-0.log
+ 
+ ==> Exited with status 1
+ 
+ ==> Common ways to troubleshoot your deploy: `https://render.com/docs/troubleshooting-deploys` 
+ 
+ ==> Running 'npm run start:render'
+ 
+ npm error Missing script: "start:render"
+ 
+ npm error
+ 
+ npm error To see a list of scripts, run:
+ 
+ npm error   npm run
+ 
  npm error A complete log of this run can be found in: /opt/render/.cache/_logs/2026-08-09T10_22_10_240Z-debug-0.log
 
 **Assistant**
