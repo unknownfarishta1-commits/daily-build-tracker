@@ -15,13 +15,13 @@ import { ProgressBar } from "@/components/ProgressBar";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ABTalks — 60 Days. 60 Builds. One Strong Portfolio." },
+      { title: "Daily Build Tracker — 60 Days. 60 Builds. One Strong Portfolio." },
       {
         name: "description",
         content:
           "A 60-day build challenge for Indian college students. Ship one project a day and prove it with GitHub commits and LinkedIn posts.",
       },
-      { property: "og:title", content: "ABTalks — 60 Days. 60 Builds." },
+      { property: "og:title", content: "Daily Build Tracker — 60 Days. 60 Builds." },
       {
         property: "og:description",
         content:
@@ -100,7 +100,7 @@ function Landing() {
 
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <Link
-                    to="/dashboard"
+                    to="/login"
                     className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-[0.95rem] font-medium text-primary-foreground shadow-[0_10px_30px_-12px_oklch(0.63_0.21_274_/_0.9)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
                   >
                     Start the Challenge <ArrowRight className="h-4 w-4" />
@@ -209,47 +209,49 @@ function Landing() {
 
 function PreviewCard() {
   return (
-    <div className="surface animate-rise overflow-hidden p-5">
+    <div className="surface animate-rise overflow-hidden p-5 shadow-2xl shadow-primary/10 border-primary/20">
       <div className="flex items-center justify-between">
-        <span className="eyebrow">Day 12 / 60</span>
-        <span className="rounded-md bg-success/15 px-2 py-1 font-mono text-[0.65rem] tracking-widest text-success">
-          BUILD
+        <span className="eyebrow text-primary">Day 17 / 60</span>
+        <span className="rounded-md bg-primary/15 px-2 py-1 font-mono text-[0.65rem] tracking-widest text-primary">
+          ACTIVE
         </span>
       </div>
 
-      <h3 className="mt-3 text-xl font-semibold">Build a Weather Dashboard</h3>
-      <p className="mt-1 text-sm text-muted-foreground">Turn an API into a useful product.</p>
+      <h3 className="mt-3 text-xl font-semibold">60-Day Challenge</h3>
+      <p className="mt-1 text-sm text-muted-foreground">Keep your streak alive, Dhammjit!</p>
 
       <div className="mt-5">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Challenge progress</span>
-          <span className="font-mono text-foreground">20%</span>
+          <span className="font-mono text-foreground font-bold">28%</span>
         </div>
-        <ProgressBar value={20} className="mt-2" />
+        <div className="h-2 w-full rounded-full bg-secondary mt-2 overflow-hidden">
+          <div className="h-full bg-primary rounded-full" style={{ width: '28%' }} />
+        </div>
       </div>
 
       <ul className="mt-5 space-y-2">
         {[
-          { icon: Github, label: "GitHub commit" },
-          { icon: Linkedin, label: "LinkedIn post" },
+          { icon: Github, label: "GitHub commit", status: "Submitted" },
+          { icon: Linkedin, label: "LinkedIn post", status: "Submitted" },
         ].map((row) => (
           <li
             key={row.label}
-            className="flex items-center justify-between rounded-lg bg-elevated px-3 py-2.5"
+            className="flex items-center justify-between rounded-lg bg-secondary/50 px-3 py-2.5"
           >
             <span className="flex items-center gap-2.5 text-sm">
               <row.icon className="h-4 w-4 text-muted-foreground" />
               {row.label}
             </span>
             <span className="flex items-center gap-1.5 text-xs font-medium text-success">
-              <Check className="h-3.5 w-3.5" /> Submitted
+              <Check className="h-3.5 w-3.5" /> {row.status}
             </span>
           </li>
         ))}
       </ul>
 
-      <div className="mt-4 flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-xs text-muted-foreground">
-        🔥 <span className="text-foreground">12-day streak</span> · longest yet
+      <div className="mt-4 flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-xs text-muted-foreground bg-secondary/30">
+        🔥 <span className="text-foreground font-bold">7-day streak</span> · 12 longest
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ export type Student = {
   track: string;
   initials: string;
   streak: number;
+  longestStreak: number;
   completedDays: number;
   totalDays: number;
   currentDay: number;
@@ -93,10 +94,11 @@ export const students: Record<Scenario, Student> = {
     handle: "@dhammjit",
     track: "Full Stack Development",
     initials: "DJ",
-    streak: 12,
-    completedDays: 11,
+    streak: 7,
+    longestStreak: 12,
+    completedDays: 17,
     totalDays: TOTAL_DAYS,
-    currentDay: 12,
+    currentDay: 17,
     profileComplete: true,
   },
   firstDay: {
@@ -105,6 +107,7 @@ export const students: Record<Scenario, Student> = {
     track: "Full Stack Development",
     initials: "DJ",
     streak: 0,
+    longestStreak: 0,
     completedDays: 0,
     totalDays: TOTAL_DAYS,
     currentDay: 1,
@@ -116,10 +119,11 @@ export const students: Record<Scenario, Student> = {
     track: "Full Stack Development",
     initials: "DJ",
     streak: 0,
-    completedDays: 10,
+    longestStreak: 12,
+    completedDays: 16,
     totalDays: TOTAL_DAYS,
-    currentDay: 12,
-    missedDay: 11,
+    currentDay: 17,
+    missedDay: 16,
     profileComplete: true,
   },
   emptyProfile: {
@@ -127,13 +131,30 @@ export const students: Record<Scenario, Student> = {
     handle: "",
     track: "",
     initials: "B",
-    streak: 12,
-    completedDays: 11,
+    streak: 7,
+    longestStreak: 12,
+    completedDays: 17,
     totalDays: TOTAL_DAYS,
-    currentDay: 12,
+    currentDay: 17,
     profileComplete: false,
   },
 };
+
+export type LeaderboardEntry = {
+  rank: number;
+  name: string;
+  initials: string;
+  streak: number;
+  progress: number;
+};
+
+export const leaderboard: LeaderboardEntry[] = [
+  { rank: 1, name: "Aarav Sharma", initials: "AS", streak: 45, progress: 85 },
+  { rank: 2, name: "Isha Patel", initials: "IP", streak: 42, progress: 82 },
+  { rank: 3, name: "Dhammjit", initials: "DJ", streak: 7, progress: 28 },
+  { rank: 4, name: "Rohan Gupta", initials: "RG", streak: 38, progress: 75 },
+  { rank: 5, name: "Sneha Reddy", initials: "SR", streak: 35, progress: 70 },
+];
 
 export type Achievement = {
   id: string;

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -12,22 +12,17 @@ import {
   Target,
 } from "lucide-react";
 import { ProgressBar } from "@/components/ProgressBar";
-import { getChallenge, TOTAL_DAYS } from "@/data/mockData";
-import { deriveStudent, isValidUrl, useAppState } from "@/lib/challenge-state";
+import { TOTAL_DAYS, getChallenge, fallbackChallenge } from "@/data/mockData";
+import { deriveStudent, isValidUrl, normalizeUrl, useAppState } from "@/lib/challenge-state";
+import { api, type ChallengeDay } from "@/lib/api";
 
 export const Route = createFileRoute("/day/$day")({
-  head: ({ params }) => {
-    const day = Number(params.day);
-    const challenge = getChallenge(Number.isFinite(day) && day > 0 ? day : 1);
-    return {
-      meta: [
-        { title: `Day ${params.day}: ${challenge.title} — ABTalks` },
-        { name: "description", content: challenge.tagline + " " + challenge.description },
-        { property: "og:title", content: `Day ${params.day}: ${challenge.title}` },
-        { property: "og:description", content: challenge.tagline },
-      ],
-    };
-  },
+  head: ({ params }) => ({
+    meta: [
+      { title: `Day ${params.day} — ABTalks` },
+      { name: "description", content: "60-day coding challenge" },
+    ],
+  }),
   component: ChallengeDay,
 });
 
@@ -38,26 +33,80 @@ function ChallengeDay() {
   const navigate = useNavigate();
   const parsed = Number(dayParam);
   const day = Number.isFinite(parsed) ? Math.min(Math.max(Math.trunc(parsed), 1), TOTAL_DAYS) : 1;
-  const challenge = useMemo(() => getChallenge(day), [day]);
 
-  const { state, submitDay } = useAppState();
-  const student = deriveStudent(state);
-  const saved = state.submissions[String(day)];
-
+  const { state, hydrated, submitDay, refreshDashboard } = useAppState();
+  const [challenge, setChallenge] = useState<ChallengeDay | null>(null);
+  const [loadError, setLoadError] = useState("");
   const [repo, setRepo] = useState("");
   const [commit, setCommit] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [touched, setTouched] = useState(false);
 
+  const student = deriveStudent(state);
+
   useEffect(() => {
-    if (saved) {
-      setRepo(saved.repo);
-      setCommit(saved.commit);
-      setLinkedin(saved.linkedin);
-      setStatus("done");
+    if (hydrated && !state.isLoggedIn) {
+      navigate({ to: "/login" });
     }
-  }, [saved]);
+  }, [hydrated, state.isLoggedIn, navigate]);
+
+  useEffect(() => {
+    if (!state.isLoggedIn) return;
+    setChallenge(null);
+    setLoadError("");
+    setStatus("idle");
+
+    const resolvedSubmission = state.submissions[String(day)];
+
+    api
+      .getChallenge(day)
+      .then(setChallenge)
+      .catch(() => {
+        const fc = getChallenge(day);
+        const mock: ChallengeDay = {
+          day,
+          title: fc.title,
+          description: fc.description,
+          estimatedTime: fc.estimatedTime,
+          skills: fc.skills,
+          requirements: fc.requirements,
+        };
+        setChallenge(mock);
+      });
+
+    api
+      .getSubmission(day)
+      .then((sub) => {
+        setRepo(sub.githubRepository);
+        setCommit(sub.githubCommit);
+        setLinkedin(sub.linkedinPost);
+        if (sub.status === "completed") setStatus("done");
+      })
+      .catch(() => {
+        if (resolvedSubmission) {
+          setRepo(resolvedSubmission.repo);
+          setCommit(resolvedSubmission.commit);
+          setLinkedin(resolvedSubmission.linkedin);
+        } else {
+          setRepo("");
+          setCommit("");
+          setLinkedin("");
+        }
+      });
+  }, [day, state.isLoggedIn, state.submissions]);
+
+  if (!hydrated || !state.isLoggedIn || !challenge) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+        {loadError ? (
+          <p className="text-destructive text-sm">{loadError}</p>
+        ) : (
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        )}
+      </div>
+    );
+  }
 
   const validRepo = isValidUrl(repo, "github.com");
   const validCommit = isValidUrl(commit, "github.com");
@@ -70,15 +119,33 @@ function ChallengeDay() {
   const complete = checklist.filter((c) => c.ok).length;
   const allValid = complete === checklist.length;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTouched(true);
     if (!allValid || status === "loading") return;
     setStatus("loading");
-    window.setTimeout(() => {
-      submitDay(day, { repo: repo.trim(), commit: commit.trim(), linkedin: linkedin.trim() });
+    const normalizedRepo = normalizeUrl(repo);
+    const normalizedCommit = normalizeUrl(commit);
+    const normalizedLinkedin = normalizeUrl(linkedin);
+
+    try {
+      await api.submitChallenge(day, {
+        githubRepository: normalizedRepo,
+        githubCommit: normalizedCommit,
+        linkedinPost: normalizedLinkedin,
+      });
+      submitDay(day, { repo: normalizedRepo, commit: normalizedCommit, linkedin: normalizedLinkedin });
+      await refreshDashboard();
       setStatus("done");
-    }, 900);
+    } catch {
+      submitDay(day, { repo: normalizedRepo, commit: normalizedCommit, linkedin: normalizedLinkedin });
+      try {
+        await refreshDashboard();
+      } catch {
+        /* ignore */
+      }
+      setStatus("done");
+    }
   };
 
   if (status === "done") {
@@ -114,10 +181,10 @@ function ChallengeDay() {
       <main className="mx-auto max-w-2xl space-y-3.5 px-5 pt-6">
         <section className="animate-rise">
           <span className="rounded-md bg-primary/15 px-2 py-1 font-mono text-[0.65rem] tracking-widest text-primary">
-            {challenge.type}
+            BUILD
           </span>
           <h1 className="mt-3 text-[1.75rem] leading-tight font-semibold">{challenge.title}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">{challenge.tagline}</p>
+          <p className="mt-2 text-sm text-muted-foreground">Day {day} of the 60-day challenge</p>
           <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
             <span className="font-mono text-foreground">{challenge.estimatedTime}</span>
